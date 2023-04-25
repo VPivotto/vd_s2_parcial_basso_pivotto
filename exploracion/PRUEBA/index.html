@@ -1,0 +1,70 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>D3 Bar Chart</title>
+  <script src="https://d3js.org/d3.v7.min.js"></script>
+  <style>
+    .bar {
+      fill: steelblue;
+    }
+
+    .bar:hover {
+      fill: brown;
+    }
+  </style>
+</head>
+<body>
+  <script>
+    const margin = {top: 20, right: 20, bottom: 60, left: 40};
+    const width = 960 - margin.left - margin.right;
+    const height = 500 - margin.top - margin.bottom;
+
+    const x = d3.scaleBand().rangeRound([0, width]).padding(0.1);
+    const y = d3.scaleLinear().rangeRound([height, 0]);
+
+    const svg = d3.select("body")
+      .append("svg")
+      .attr("width", width + margin.left + margin.right)
+      .attr("height", height + margin.top + margin.bottom)
+      .append("g")
+      .attr("transform", "translate(" + margin.left + "," + margin.top + ")");
+
+    d3.dsv(";", "/data/147_vehiculos_mal_estacionados.csv", d3.autoType).then(data => {
+      const datosFiltrados = data.filter(d => d.prestacion === "VEHÍCULO MAL ESTACIONADO");
+      const denunciasPorBarrio = d3.group(datosFiltrados, d => d.domicilio_barrio);
+      
+      x.domain(Array.from(denunciasPorBarrio.keys()));
+      y.domain([0, d3.max(Array.from(denunciasPorBarrio.values()), d => d.length)]);
+
+      const xAxis = svg.append("g")
+        .attr("class", "axis axis--x")
+        .attr("transform", "translate(0," + height + ")")
+        .call(d3.axisBottom(x));
+
+      xAxis.selectAll("text")
+        .attr("y", 0)
+        .attr("x", -20)
+        .attr("dy", ".35em")
+        .attr("transform", "rotate(-45)")
+        .style("text-anchor", "end");
+
+      svg.append("g")
+        .attr("class", "axis axis--y")
+        .call(d3.axisLeft(y).ticks(10, "s"));
+
+      svg.selectAll(".bar")
+        .data(Array.from(denunciasPorBarrio))
+        .enter().append("rect")
+          .attr("class", "bar")
+          .attr("x", d => x(d[0]))
+          .attr("y", d => y(d[1].length))
+          .attr("width", x.bandwidth())
+          .attr("height", d => height - y(d[1].length));
+    });
+  </script>
+</body>
+</html>
+
+
