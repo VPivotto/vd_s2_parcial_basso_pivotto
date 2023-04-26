@@ -1,6 +1,6 @@
-const mapaFetch = d3.json('../data/palermo.geojson');
-const callesPalermo = d3.json('../data/callesPalermo.geojson');
-const dataFetch = d3.dsv(';', '../data/147_vehiculos_mal_estacionados.csv', d3.autoType);
+const mapaFetch = d3.json('../../data/palermo.geojson');
+const callesPalermo = d3.json('../../data/callesPalermo.geojson');
+const dataFetch = d3.dsv(';', '../../data/147_vehiculos_mal_estacionados.csv', d3.autoType);
 
 Promise.all([mapaFetch, callesPalermo, dataFetch]).then(([palermo, callesPalermo, data]) => {
   const datosFiltrados = data.filter((d) => d.domicilio_barrio === 'PALERMO' && d.prestacion === 'VEHÍCULO MAL ESTACIONADO');
