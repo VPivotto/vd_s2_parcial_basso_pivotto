@@ -3,8 +3,8 @@ d3.json('https://cdn.jsdelivr.net/npm/d3-time-format@3/locale/es-ES.json').then(
   d3.timeFormatDefaultLocale(locale)
 })
 
-const mapaFetch = d3.json('palermo.geojson');
-const dataFetch = d3.dsv(';', '147_vehiculos_mal_estacionados.csv', d3.autoType);
+const mapaFetch = d3.json('../../data/palermo.geojson');
+const dataFetch = d3.dsv(';', '../../data/147_vehiculos_mal_estacionados.csv', d3.autoType);
 
 Promise.all([mapaFetch, dataFetch]).then(([barrios, data]) => {
   const datosFiltrados = data.filter((d) => d.prestacion === 'VEHÍCULO MAL ESTACIONADO' && d.domicilio_barrio === 'PALERMO');
