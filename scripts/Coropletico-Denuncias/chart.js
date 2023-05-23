@@ -1,6 +1,7 @@
 const mapaFetch = d3.json('../../data/barrios-caba.geojson');
 const dataFetch = d3.dsv(';', '../../data/147_vehiculos_mal_estacionados.csv', d3.autoType);
 
+
 Promise.all([mapaFetch, dataFetch]).then(([barrios, data]) => {
   const datosFiltrados = data.filter((d) => d.prestacion === 'VEHÍCULO MAL ESTACIONADO');
   const reclamosPorBarrio = d3.group(datosFiltrados, (d) => d.domicilio_barrio);
@@ -26,15 +27,16 @@ Promise.all([mapaFetch, dataFetch]).then(([barrios, data]) => {
         fill: (d) => {
           let nombreBarrio = d.properties.BARRIO;
           let totalReclamos = reclamosPorBarrio.get(nombreBarrio).length;
-          let porcentaje = (totalReclamos / totalDenuncias) * 100;
-          return porcentaje;
+          //let porcentaje = ((totalReclamos / totalDenuncias) * 100).toFixed(2);
+          //return porcentaje
+          return totalReclamos;
         },
         stroke: '#ccc',
         title: (d) => {
           let nombreBarrio = d.properties.BARRIO;
           let totalReclamos = reclamosPorBarrio.get(nombreBarrio).length;
-          let porcentaje = (totalReclamos / totalDenuncias) * 100;
-          return `${nombreBarrio}`;
+          let porcentaje = ((totalReclamos / totalDenuncias) * 100).toFixed(2);
+          return `${nombreBarrio}\n ${porcentaje}%`;
         },
       }),
       Plot.text(
@@ -43,8 +45,7 @@ Promise.all([mapaFetch, dataFetch]).then(([barrios, data]) => {
           text: (d) => {
             let nombreBarrio = d.properties.BARRIO;
             let totalReclamos = reclamosPorBarrio.get(nombreBarrio).length;
-            let porcentaje = (totalReclamos / totalDenuncias) * 100;
-            return `${porcentaje.toFixed(2)}%`;
+            return `${totalReclamos}`;
             
           },
           fill: "black",
